@@ -6,6 +6,7 @@ const P = new Pokedex();
 type TPokemonContext = {
     pokemons: any[];
     loading: Boolean;
+    page: number;
     setLimit: (limit: number) => void;
     setPage: (page: number) => void;
 };
@@ -55,11 +56,16 @@ export function PokemonProvider({ children }: { children: ReactNode }) {
             setPokemons([]);
             setLoading(false);
         }
-    }, [page, limit]);
+    }, []);
+
+    useEffect(() => {
+        loadPokemons();
+    }, [page, limit])
 
     return <PokemonContext.Provider value={{
         loading,
         pokemons,
+        page,
         setLimit, 
         setPage
     }}>
