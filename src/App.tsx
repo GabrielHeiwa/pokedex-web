@@ -1,17 +1,15 @@
-import { useState } from "react"
-import { ListAllPokemons } from "./lib/pokemon-api";
+import { usePokemon } from "./context/pokemon.context"
+
 
 function App() {
-  const [pokemonsList, setPokemonList] = useState<any[]>([]);
-
-  ListAllPokemons({ limit: 20, page: 1 })
-    .then((pokemonList) => setPokemonList(pokemonList.results));
+  const { pokemons } = usePokemon();
 
   return (
     <>
       <h1>Pokemon List</h1>
+      <div></div>
       <pre>
-        {JSON.stringify(pokemonsList, null, 2)}
+        {JSON.stringify(pokemons, null, 2)}
       </pre>
     </>
   )
