@@ -1,5 +1,5 @@
 import { ReactNode, createContext, useContext, useEffect, useState } from "react";
-import { NamedAPIResource, Pokedex } from "pokeapi-js-wrapper"
+import { Pokedex, Pokemon } from "pokeapi-js-wrapper"
 
 const P = new Pokedex();
 
@@ -20,7 +20,7 @@ export function PokemonProvider({ children }: { children: ReactNode }) {
     // States
     const [page, setPage] = useState(DEFAULT_PAGE);
     const [limit, setLimit] = useState(DEFAULT_LIMIT);
-    const [pokemons, setPokemons] = useState<any[]>([]);
+    const [pokemons, setPokemons] = useState<Pokemon[]>([]);
     const [loading, setLoading] = useState<Boolean>(false);
 
     // Functions
@@ -28,12 +28,22 @@ export function PokemonProvider({ children }: { children: ReactNode }) {
         try {
             setLoading(true);
 
-            const response = await P.getPokemonsList({
+            const pokemonList = await P.getPokemonsList({
                 offset: page * limit,
                 limit,
             });
 
-            setPokemons(response.results);
+            const listOfPokemonName = pokemonList.results.map(pokemon => pokemon.name);
+
+            // DISCLAIMER: Althoug we can send a list of word the return type of function
+            // 'getPokemonByName' does not match with the type of param send.
+            const pokemonsDetails = await P.getPokemonByName(listOfPokemonName);
+            for (const pokemonDetail of pokemonsDetails) {
+
+            }
+            console.log('what that pokemon', Array.isArray(pokemonsDetails))
+
+            setPokemons();
 
         } catch (error: any) {
             console.error(error);
@@ -66,7 +76,7 @@ export function PokemonProvider({ children }: { children: ReactNode }) {
         loading,
         pokemons,
         page,
-        setLimit, 
+        setLimit,
         setPage
     }}>
         {children}
